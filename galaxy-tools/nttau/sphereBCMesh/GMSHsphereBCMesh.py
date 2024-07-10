@@ -24,16 +24,19 @@ def create_geometry_and_mesh(sphere_data, geometry):
     gmsh.model.occ.synchronize()
 
     # Creating physical groups
+    # Creating physical groups
     if hollow_core == False:
         for i in range(1, num_layers+1):
             volume_tag = i
-            gmsh.model.addPhysicalGroup(3, [volume_tag], tag=i)
-            gmsh.model.setPhysicalName(3, 30 + i, f"sph_{i}_volume")
+            physical_tag = 30 + i  # Unique physical tag
+            gmsh.model.addPhysicalGroup(3, [volume_tag], tag=physical_tag)
+            gmsh.model.setPhysicalName(3, physical_tag, f"sph_{i}_volume")  # Use the physical_tag here
     else:
         for i in range(1, num_layers+1):
             volume_tag = i
-            gmsh.model.addPhysicalGroup(3, [volume_tag], tag=i)
-            gmsh.model.setPhysicalName(3, 30 + i, f"sph_{i}_volume")
+            physical_tag = 30 + i  # Unique physical tag
+            gmsh.model.addPhysicalGroup(3, [volume_tag], tag=physical_tag)
+            gmsh.model.setPhysicalName(3, physical_tag, f"sph_{i}_volume")  # Use the physical_tag here
 
         
     if cut_in_half == True:
@@ -54,13 +57,21 @@ def create_geometry_and_mesh(sphere_data, geometry):
     else:
         for i in range(1, num_layers+1):
             sphere_tag = i
-            adjusted_tag = (i * 2) - 2
-            if i<=2:
+            adjusted_tag_outer = (i * 2) - 2
+            adjusted_tag_inner = (i * 2) - 1
+            if i==1:
                 gmsh.model.addPhysicalGroup(2, [sphere_tag], tag=sphere_tag)
-                gmsh.model.setPhysicalName(2, sphere_tag, f"sph_{i}_sphere")
+                gmsh.model.setPhysicalName(2, sphere_tag, f"sph_{i}_outer")
+            elif i==2:
+                gmsh.model.addPhysicalGroup(2, [sphere_tag], tag=sphere_tag)
+                gmsh.model.setPhysicalName(2, sphere_tag, f"sph_{i}_outer")
+                gmsh.model.addPhysicalGroup(2, [adjusted_tag_inner], tag=sphere_tag + 10)
+                gmsh.model.setPhysicalName(2, sphere_tag + 10, f"sph_{i}_inner")
             else:
-                gmsh.model.addPhysicalGroup(2, [adjusted_tag], tag=sphere_tag)
-                gmsh.model.setPhysicalName(2, sphere_tag, f"sph_{i}_sphere")
+                gmsh.model.addPhysicalGroup(2, [adjusted_tag_outer], tag=sphere_tag)
+                gmsh.model.setPhysicalName(2, sphere_tag, f"sph_{i}_outer")
+                gmsh.model.addPhysicalGroup(2, [adjusted_tag_inner], tag=sphere_tag + 10)
+                gmsh.model.setPhysicalName(2, sphere_tag + 10, f"sph_{i}_inner")
 
 
 

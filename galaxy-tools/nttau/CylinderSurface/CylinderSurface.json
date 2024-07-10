@@ -1,0 +1,7 @@
+{
+    "cylinder_data": {
+      "num_layers": 3,
+      "num_sides": 3,
+      "mesh_factor": 0.04
+    }
+  }

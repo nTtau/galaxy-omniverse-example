@@ -1,0 +1,30 @@
+<tool id="MOOSE_input" name="MOOSE_input" version="0.1.0">
+
+    <description>Simple Tool - Creates MOOSE input filefor thermal</description>
+  
+    <requirements>
+      <container type="docker">nttaudom/gmsh:08.12.23</container>
+    </requirements>
+  
+    <command>
+      <![CDATA[
+        python3 '$__tool_directory__/MOOSE_input.py' '$Input_Json' 2>&1 &&
+
+        mv your_file.i '$Output_File'
+      ]]>
+    </command>
+  
+    <inputs>
+      <param type="data" name="Input_Json" label="Input_Json" help="Input MOOSE thermal conditions Format: JSON"/>
+    </inputs>
+
+    <outputs>
+      <data format="data" name="Output_File" label="Output_File" help="input file created. Format: i"/>
+    </outputs>
+
+    <help>
+      This tool creates input file for thermal simulations with MOOSE
+      Expected output: .i
+    </help>
+
+  </tool>

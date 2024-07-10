@@ -14,6 +14,7 @@ galaxy:
    - luis@nttaudigital.com
    - simon@nttaudigital.com
    - chrisb@nttaudigital.com
+   - raastad@nttaudigital.com
    - oliver.woolland@manchester.ac.uk
    - william.smith-14@postgrad.manchester.ac.uk
   builds_file_path: /galaxy/server/tool-data/shared/ucsc/builds.txt.sample

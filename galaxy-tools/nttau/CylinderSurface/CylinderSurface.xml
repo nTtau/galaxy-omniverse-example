@@ -1,0 +1,38 @@
+<tool id="CylinderSurface" name="CylinderSurface" version="0.1.0">
+
+    <description>Simple Tool - Sets Surface and Volume Boundaries, Meshes and Removes Unwanted Surfaces</description>
+  
+    <requirements>
+      <container type="docker">nttaudom/gmsh:08.12.23</container>
+    </requirements>
+  
+    <command>
+      <![CDATA[
+        cp '$Input_Plasma' 'plasma.step' &&
+        cp '$Input_Vacuum' 'vacuum.step' &&
+        cp '$Input_First_Wall' 'first_wall.step' &&
+        cp '$Input_Blanket' 'blanket_I.step' &&
+        python3 '$__tool_directory__/CylinderSurface.py' '$Input_Json' 2>&1 &&
+
+        mv AutoSurfaceGMSH.msh '$Output_File'
+      ]]>
+    </command>
+  
+    <inputs>
+      <param type="data" name="Input_Json" label="Input_Json" help="Input spherical mesh conditions Format: JSON"/>
+      <param type="data" name="Input_Plasma" label="Input_Plasma" help="Input Plasma layer: STEP"/>
+      <param type="data" name="Input_Vacuum" label="Input_Vacuum" help="Input Vacuum layer: STEP"/>
+      <param type="data" name="Input_First_Wall" label="Input_First_Wall" help="Input First Wall layer: STEP"/>
+      <param type="data" name="Input_Blanket" label="Input_Blanket" help="Input Blanket Layer: STEP"/>
+    </inputs>
+
+    <outputs>
+      <data format="data" name="Output_File" label="Output_File" help="Mesh output from gmsh. Format: msh"/>
+    </outputs>
+
+    <help>
+      This tool deletes unwanted surfaces from cylinder .step files and sets boundary conditions before generating 3D mesh
+      Expected output: .msh 
+    </help>
+
+  </tool>

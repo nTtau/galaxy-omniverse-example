@@ -1,0 +1,40 @@
+{
+    "inputs": {
+      "reactor_model": "sphere",
+      "num_layers": 5,
+      "sim_time": 1,
+      "time_step": 0.05
+    },
+    "heating":{
+      "heating_status": true,
+      "heating_block": 3,
+      "heating_function": "400 * sin(2 * pi * t) + 773.15"
+    },
+    "heat_source":{
+      "heat_source_status": false,
+      "heat_factor": 10000000000,
+      "heat_function": "sin(2 * pi * t) * exp(-0.1 * abs(sqrt((x^2) + (z^2)) - 5)) * exp(-0.01 * abs(y^2))"
+    },
+    "specific_heats":{
+        "specific_heat_1": "0.248 * T + 381.496",
+        "specific_heat_2": "0.248 * T + 381.496",
+        "specific_heat_3": "0.248 * T + 381.496",
+        "specific_heat_4": "0.248 * T + 381.496",
+        "specific_heat_5": "0.248 * T + 381.496"
+    },
+    "densities":{
+        "density_1": 7700,
+        "density_2": 7700,
+        "density_3": 7700,
+        "density_4": 7700,
+        "density_5": 7700
+    },
+    "conductivities":{
+        "conductivity_1": 25.5,
+        "conductivity_2": 25.5,
+        "conductivity_3": 25.5,
+        "conductivity_4": 25.5,
+        "conductivity_5": 25.5
+    }
+
+}

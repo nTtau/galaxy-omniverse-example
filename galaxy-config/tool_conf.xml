@@ -38,8 +38,12 @@
       <tool file="nttau/magnetic_field_calc/magnetic_field_calc.xml"/>
       <tool file="nttau/stellopt/stellopt.xml"/>
       <tool file="nttau/regcoil/regcoil.xml"/>
+      <tool file="nttau/CylinderSurface/CylinderSurface.xml"/>
+      <tool file="nttau/MOOSE_input/MOOSE_input.xml"/>
   </section>
-
+  <section id="new_nTtau" name="new nTtau Digital Tools">
+      <tool file="new_nttau/tokamak_gen_v2/tokamakgen.xml"/>
+  </section>
   <section id="collection_operations" name="Collection Operations">
     <tool file="${model_tools_path}/unzip_collection.xml" labels="new" />
     <tool file="${model_tools_path}/zip_collection.xml" labels="new" />

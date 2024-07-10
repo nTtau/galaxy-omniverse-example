@@ -18,7 +18,7 @@
     </inputs>
 
     <outputs>
-      <data format="data" name="reactor_output" label="Reactor STEP file" help="This is the output file containing the containment geometry. Format: STEP"/>
+      <data format="step" name="reactor_output" label="Reactor STEP file" help="This is the output file containing the containment geometry. Format: STEP"/>
       <data format='csv' name="coil_csv" label="Coil Info csv file" help="File containing information about the coils. Format: csv" />
     </outputs>
 
