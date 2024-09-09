@@ -1,0 +1,45 @@
+<tool id="convert_mm_m" name="mm to m STEP conversion" version="0.1.0">
+    <description>Extracting only the relevant components for OpenMC Simulations</description>
+    
+    <requirements>
+      <container type="docker">python:3.9.19-slim-bullseye</container>
+    </requirements>
+
+    <command>
+      <![CDATA[
+      mv '$input_plasma' 'Plasma.step' &&
+      mv '$input_vacuum' 'Vacuum.step' &&
+      mv '$input_first_wall' 'First_Wall.step' &&
+      mv '$input_blanket' 'Blanket.step' &&
+      python '$__tool_directory__/convert_mm_m.py' &&
+      mv 'Plasma.step' '$plasma' &&
+      mv 'Vacuum.step' '$vacuum' &&
+      mv 'First_Wall.step' '$first_wall' &&
+      mv 'Blanket.step' '$blanket'
+      ]]>
+    </command>
+
+    <inputs>
+      <param type="data" name="input_plasma" label="Plasma" help="Plasma geometry file"/>
+      <param type="data" name="input_vacuum" label="Vacuum" help="Vacuum geometry file"/>
+      <param type="data" name="input_first_wall" label="First Wall" help="First Wall geometry file"/>
+      <param type="data" name="input_blanket" label="Blanket" help="Blanket geometry file"/>
+    </inputs>
+
+    <outputs>
+      <data format="data" name="plasma" label="Scaled Plasma" help="Plasma geometry file"/>
+      <data format="data" name="vacuum" label="Scaled Vacuum" help="Vacuum geometry file"/>
+      <data format="data" name="first_wall" label="Scaled First Wall" help="First Wall geometry file"/>
+      <data format="data" name="blanket" label="Scaled Blanket" help="Blanket geometry file"/>
+    </outputs>
+
+    <help>
+      This tool extracts specific geometry files from a zipped archive for OpenMC simulations.
+      The input is a ZIP file containing the geometry files.
+      The output consists of the extracted geometry files:
+      - Plasma
+      - Vacuum
+      - First Wall
+      - Blanket
+    </help>
+</tool>

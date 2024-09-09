@@ -15,10 +15,13 @@ Key Features:
 import cadquery as cq
 import numpy as np
 from math import acos, atan2, degrees
+from typing import List, Tuple, Optional, Union
 import argparse
 import json
 
-def create_shape(shape, plane_to_cut="XY", cut_in_half=True):
+def create_shape(shape: cq.Shape, 
+                 plane_to_cut: str = "XY", 
+                 cut_in_half: bool = True) -> cq.Shape:
     """
     Creates a shape based on the input parameters. Splits the shape in half if needed.
     
@@ -41,7 +44,16 @@ def create_shape(shape, plane_to_cut="XY", cut_in_half=True):
     else:
         return shape
 
-def create_reactor_layer(radial_build, component_names, multiplier=1, workplane="XY", cut_in_half=True, hollow_core=True, render_save=False, save_directory="."):
+def create_reactor_layer(
+    radial_build: List[float],
+    component_names: List[str],
+    multiplier: float = 1,
+    workplane: str = "XY",
+    cut_in_half: bool = True,
+    hollow_core: bool = True,
+    render_save: bool = False,
+    save_directory: str = "."
+) -> List[cq.Shape]:
     outer_radius = 0
     component_list = []  # Initialize an empty list to hold the components
     for idx, component_thickness in enumerate(radial_build):
@@ -57,7 +69,7 @@ def create_reactor_layer(radial_build, component_names, multiplier=1, workplane=
                 .cut(cq.Workplane(workplane).sphere(inner_radius))
             )
 
-        if idx  == 1 and hollow_core == True:
+        if idx == 1 and hollow_core:
             print("skipping layer 2")
         else:
             shape = create_shape(sphere, plane_to_cut=workplane, cut_in_half=cut_in_half)
@@ -70,7 +82,18 @@ def create_reactor_layer(radial_build, component_names, multiplier=1, workplane=
 
     return component_list  # Return the list of components instead of the assembly
 
-def generate_sphere(radial_build, component_names, multipliers=None, workplane="XY", batch=False, cut_in_half=True, hollow_core=True, render_save=False, save_directory="."):
+def generate_sphere(
+    radial_build: List[float],
+    component_names: List[str],
+    multipliers: Optional[Union[List[float], np.ndarray]] = None,
+    workplane: str = "XY",
+    batch: bool = False,
+    cut_in_half: bool = True,
+    hollow_core: bool = True,
+    render_save: bool = False,
+    save_directory: str = "."
+) -> Union[cq.Assembly, List[cq.Shape]]:
+    
     if len(radial_build) != len(component_names):
         raise ValueError("radial_build and component_names must be the same length")
     
@@ -80,22 +103,33 @@ def generate_sphere(radial_build, component_names, multipliers=None, workplane="
     if batch:
         for layer_idx in range(len(radial_build)):
             for multiplier in multipliers:
-                reactor = create_reactor_layer(radial_build, component_names, multiplier, workplane, cut_in_half, hollow_core=hollow_core, render_save=render_save, save_directory=save_directory)
+                reactor = create_reactor_layer(
+                    radial_build, component_names, multiplier, workplane, cut_in_half, hollow_core=hollow_core, render_save=render_save, save_directory=save_directory
+                )
     else:
-        reactor = create_reactor_layer(radial_build, component_names, workplane=workplane, cut_in_half=cut_in_half, hollow_core=hollow_core, render_save=render_save, save_directory=save_directory)
+        reactor = create_reactor_layer(
+            radial_build, component_names, workplane=workplane, cut_in_half=cut_in_half, hollow_core=hollow_core, render_save=render_save, save_directory=save_directory
+        )
     
     return reactor
 
-def add_azimuthal_beamlines(reactor_core_parts, dimensions, layers, radius, use_mini_beamlines=False):
+def add_azimuthal_beamlines(
+    reactor_core_parts: List[cq.Shape],
+    dimensions: Tuple[float, float, float],
+    layers: List[int],
+    radius: float,
+    use_mini_beamlines: bool = False
+) -> Tuple[List[cq.Shape], List[cq.Shape]]:
+    
     length, width, height = dimensions
-    length = length+radius
+    length = length + radius
     if use_mini_beamlines:
         mini_width, mini_height = width / 2, height / 2
     else:
         mini_width, mini_height = width, height
 
     num_layers = len(layers)
-    polar_angles = np.linspace(0, np.pi, num_layers+2)[1:-1]
+    polar_angles = np.linspace(0, np.pi, num_layers + 2)[1:-1]
 
     updated_parts = []
     beamlines_list = []
@@ -115,8 +149,8 @@ def add_azimuthal_beamlines(reactor_core_parts, dimensions, layers, radius, use_
                 phi_deg = degrees(atan2(y, x))
 
                 num_minis = 4 if use_mini_beamlines else 1
-                for dx in np.linspace(-width/4 * (num_minis - 1), width/4 * (num_minis - 1), num_minis):
-                    for dy in np.linspace(-height/4 * (num_minis - 1), height/4 * (num_minis - 1), num_minis):
+                for dx in np.linspace(-width / 4 * (num_minis - 1), width / 4 * (num_minis - 1), num_minis):
+                    for dy in np.linspace(-height / 4 * (num_minis - 1), height / 4 * (num_minis - 1), num_minis):
                         
                         beamline = cq.Workplane("XY").box(length, mini_width, mini_height, centered=(True, True, True))
                         
@@ -140,14 +174,10 @@ def add_azimuthal_beamlines(reactor_core_parts, dimensions, layers, radius, use_
 
     return updated_parts, beamlines_list  # Updated reactor parts and the beamlines
 
-
-
-
 parser = argparse.ArgumentParser()
 parser.add_argument('file_path')
 args = parser.parse_args()
 file_path = args.file_path
-
 
 # Open the file and load the data
 with open(file_path, 'r') as file:
@@ -160,21 +190,20 @@ component_names = geometry_data['component_names']
 cut_in_half = geometry_data['cut_in_half']
 hollow_core = geometry_data['hollow_core']
 
-
-
-
 major_radius = sum(radial_build)
 
-reactor_core_parts = generate_sphere(radial_build, component_names, batch=False, cut_in_half=cut_in_half, hollow_core=hollow_core, render_save=False)
-#Add each item from reactor_core list to an assembly
+reactor_core_parts = generate_sphere(
+    radial_build, component_names, batch=False, cut_in_half=cut_in_half, hollow_core=hollow_core, render_save=False
+)
+# Add each item from reactor_core list to an assembly
 
 beamline_data = data['beamlines']
 gen_beamlines = beamline_data['gen_beamlines']
 dimensions = beamline_data['beamline_dimensions']
-layer_spacing = beamline_data['layer_spacing'] # Number of beamlines in each azimuthal array
+layer_spacing = beamline_data['layer_spacing']  # Number of beamlines in each azimuthal array
 reactor = cq.Assembly()
 
-if gen_beamlines == True:
+if gen_beamlines:
     reactor_core, beamlines = add_azimuthal_beamlines(reactor_core_parts, dimensions, layer_spacing, major_radius)
     for i in range(len(reactor_core)):
         reactor.add(reactor_core[i])
