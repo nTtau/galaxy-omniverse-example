@@ -1,0 +1,38 @@
+<tool id="extract_radbuild" name="Radial Build from ZIP" version="0.1.0">
+    <description>Extracting only the relevant components for OpenMC Simulations</description>
+    
+    <requirements>
+      <container type="docker">nttaudom/unzip:25.07.24</container>
+    </requirements>
+
+    <command>
+      <![CDATA[
+        unzip -o '$zipped_geometry' &&
+        mv "Plasma.step" '$plasma' &&
+        mv "Vacuum.step" '$vacuum' &&
+        mv "First Wall.step" '$first_wall' &&
+        mv "Blanket.step" '$blanket'
+      ]]>
+    </command>
+
+    <inputs>
+      <param type="data" name="zipped_geometry" label="Zipped Geometry" help="Geometry file to be unzipped. Format: ZIP"/>
+    </inputs>
+
+    <outputs>
+      <data format="data" name="plasma" label="Plasma" help="Plasma geometry file"/>
+      <data format="data" name="vacuum" label="Vacuum" help="Vacuum geometry file"/>
+      <data format="data" name="first_wall" label="First Wall" help="First Wall geometry file"/>
+      <data format="data" name="blanket" label="Blanket" help="Blanket geometry file"/>
+    </outputs>
+
+    <help>
+      This tool extracts specific geometry files from a zipped archive for OpenMC simulations.
+      The input is a ZIP file containing the geometry files.
+      The output consists of the extracted geometry files:
+      - Plasma
+      - Vacuum
+      - First Wall
+      - Blanket
+    </help>
+</tool>

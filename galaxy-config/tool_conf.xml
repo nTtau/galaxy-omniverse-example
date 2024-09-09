@@ -43,6 +43,11 @@
   </section>
   <section id="new_nTtau" name="new nTtau Digital Tools">
       <tool file="new_nttau/tokamak_gen_v2/tokamakgen.xml"/>
+      <tool file="new_nttau/mfe_mirror_geometry/mfe_mirror_geometry.xml"/>
+      <tool file="new_nttau/extract_radbuild/extract_radbuild.xml"/>
+      <tool file="new_nttau/run_openmc/run_openmc.xml"/>
+      <tool file="new_nttau/convert_mm_m/convert_mm_m.xml"/>
+      <tool file="new_nttau/extract_statepoint/extract_statepoint.xml"/>
   </section>
   <section id="collection_operations" name="Collection Operations">
     <tool file="${model_tools_path}/unzip_collection.xml" labels="new" />

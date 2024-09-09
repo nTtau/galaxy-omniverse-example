@@ -12,7 +12,7 @@
         cp '$blanket_Step' 'Blanket_I.step' &&
         cp '$vaccum_Step' 'Vacuum.step' &&
         cp '$firstwall_Step' 'First_Wall.step' &&
-        python3 '$__tool_directory__/convertor_stp_files.py' &&
+        python3 '$__tool_directory__/convertor_stp_files.py' 2>&1 &&
 
         mv dagmc.h5m '$dagmc_File'
       ]]>

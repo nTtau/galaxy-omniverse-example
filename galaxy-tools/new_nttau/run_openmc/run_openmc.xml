@@ -1,0 +1,36 @@
+<tool id="run_openmc" name="Run OpenMC" version="0.1.0">
+
+    <description>OpenMC creation script</description>
+  
+    <requirements>
+      <container type="docker">williamjsmith15/omniverse-openmc:05062023</container>
+    </requirements>
+  
+    <command>
+      <![CDATA[
+        cp '$dagmc' 'dagmc.h5m' &&
+        python3 '$__tool_directory__/run_openmc.py' --input '$openmc_config' --output '.' &&
+
+        mv 'statepoint_generic.h5' '$openmc_statepoint'
+      ]]>
+    </command>
+  
+    <inputs>
+      <param type="data" name="dagmc" label="DagMC Input" help="Input dagmc step file"/>
+      <param type="data" name="openmc_config" label="OpenMC Config" help="Input dagmc step file"/>
+    </inputs>
+
+    <outputs>
+      <data format="data" name="openmc_statepoint" label="openMC statepoint" help="Txt file to print to the h5m_out. Format: txt"/>
+    </outputs>
+
+    <help>
+      This tool run the command writes the file input 'Text_To_Write' to the txt file 'Output_File' in an Ubuntu 20.04 container.
+      This is done via a python script to demonstrate running scripts in Galaxy tools.
+      Expected output: 
+      h5m_out: ''
+      h5m_err: ''
+      outputs: Output_File: Content of the 'File_To_Write' input
+    </help>
+
+  </tool>

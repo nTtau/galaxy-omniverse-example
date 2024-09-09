@@ -1,6 +1,6 @@
-<tool id="tokamakgenv2" name="tokamakgenv2" version="0.1.0">
+<tool id="mfe_mirror_geometry" name="MFE Mirror Geometry" version="0.1.0">
 
-    <description>Tool to generate the CAD for a tokamak from a radial build</description>
+    <description>Tool to generate the CAD for an mfe mirror reactor</description>
   
     <requirements>
       <container type="docker">nttaudom/paramak:29.11.23</container>
@@ -9,8 +9,8 @@
     <command>
       <![CDATA[
       cp '$__tool_directory__/'*py ./ &&
-      python create_geometry.py --input '$Config' 2>&1 &&
-      mv tokamak_output_dir.zip '$tokamak_output'
+      python mirror_from_json.py --input '$Config' 2>&1 &&
+      mv mirror_output.zip '$mirror_output'
       ]]>
     </command>
   
@@ -19,7 +19,7 @@
     </inputs>
 
     <outputs>
-      <data format="zip" name="tokamak_output" label="Tokamak Output" help="Zip file containing the output geometry files"/>
+      <data format="zip" name="mirror_output" label="Mirror Output" help="Zip file containing the output geometry files"/>
     </outputs>
 
     <help>
